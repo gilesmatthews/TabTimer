@@ -1,0 +1,17 @@
+{
+  "manifest_version": 3,
+  "name": "TabTimer",
+  "version": "1.0",
+  "description": "A Chrome extension that generates timers for your running tabs",
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "TabTimer",
+    "default_icon": {
+      "16": "icons/logo.png"
+    }
+  },
+  "permissions": ["tabs", "storage", "alarms"],
+  "background": {
+    "service_worker": "background.js"
+  }
+}
