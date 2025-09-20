@@ -10,7 +10,7 @@
       "16": "icons/logo.png"
     }
   },
-  "permissions": ["tabs", "storage", "alarms"],
+  "permissions": ["tabs", "tabGroups", "storage", "alarms"],
   "background": {
     "service_worker": "background.js"
   }

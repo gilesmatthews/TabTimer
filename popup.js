@@ -10,12 +10,14 @@ async function loadAlarms() {
   let { alarmConfigs } = await chrome.storage.session.get('alarmConfigs');
   alarmConfigs = alarmConfigs ? alarmConfigs : {};
 
+  console.log(JSON.stringify(alarmConfigs, null, 2));
+
   let alarmsArray = document.getElementById('alarms-array');
 
   const alarmArrayChildren = Object.values(alarmConfigs)
-    .filter(alarm => alarm.active)
-    .map(alarm => {
-      return createAlarmElement(alarm.id, alarm.tab, alarm.expired, alarm.running, alarm.alarmEnd);
+    .filter(alarmConfig => alarmConfig.active)
+    .map(alarmConfig => {
+      return createAlarmElement(alarmConfig);
     });
   
   alarmsArray.replaceChildren(...alarmArrayChildren);
@@ -37,6 +39,8 @@ async function addAlarmInput() {
   alarmConfigs = alarmConfigs ? alarmConfigs : {};
 
   const tab = await chrome.tabs.query({ active: true, currentWindow: true })
+  const tabGroup = tab[0].groupId > 0 ? await chrome.tabGroups.get(tab[0].groupId) : null
+
   const alarmId = Object.keys(alarmConfigs).length + 1;
 
   alarmConfigs = {
@@ -45,6 +49,7 @@ async function addAlarmInput() {
       active: true,
       id: alarmId,
       tab: tab[0],
+      tabGroup: tabGroup,
       alarmEnd: null,
       expired: false,
       running: false,

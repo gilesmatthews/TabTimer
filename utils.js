@@ -1,3 +1,16 @@
+// Chrome tab group color palette
+const TAB_GROUP_COLORS = {
+  grey:   '#9AA0A6',
+  blue:   '#8AB4F8',
+  red:    '#F28B82',
+  yellow: '#FFF475',
+  green:  '#81C995',
+  pink:   '#FF8BCB',
+  purple: '#D7AEFB',
+  cyan:   '#78D9EC',
+  orange: '#FCBC7E',
+};
+
 async function loadAlarms() {
   let { alarmConfigs } = await chrome.storage.session.get('alarmConfigs');
   alarmConfigs = alarmConfigs ? alarmConfigs : {};
@@ -22,7 +35,19 @@ async function updateBadge() {
   }
 }
 
-function createAlarmElement(id, tab, expired, running, alarmEnd) {
+function createAlarmElement(alarmConfig) {
+
+  const {
+    id,
+    tab,
+    expired,
+    running,
+    alarmEnd,
+    tabGroup
+  } = alarmConfig
+
+  console.log(tabGroup)
+
   let newElement = document.createElement('div');
   newElement.id = `alarm-${id}`;
   newElement.style.display = "flex";
@@ -31,11 +56,20 @@ function createAlarmElement(id, tab, expired, running, alarmEnd) {
   newElement.style.gap = "12px";
   newElement.style.width = "100%";
 
+  // Vertical color bar
+  let colorBar = document.createElement('div');
+  colorBar.style.width = "6px";
+  colorBar.style.height = "40px";
+  colorBar.style.borderRadius = "3px";
+  colorBar.style.background = tabGroup ? TAB_GROUP_COLORS[tabGroup.color] : "transparent";
+  colorBar.style.marginRight = "1px";
+
   let elementTxt = document.createElement('p');
   elementTxt.textContent = `${tab.title}`;
-  elementTxt.style.fontWeight = "bold";
+  // elementTxt.style.fontWeight = "bold";
   elementTxt.style.margin = "0";
   elementTxt.style.flex = 3;
+  elementTxt.style.wordBreak = "break-all";
 
   let elementInput = document.createElement('input');
   elementInput.id = `alarm-${id}-input`;
@@ -105,6 +139,7 @@ function createAlarmElement(id, tab, expired, running, alarmEnd) {
     deleteAlarm(id);
   });
 
+  newElement.appendChild(colorBar);
   newElement.appendChild(elementTxt);
   newElement.appendChild(elementInput);
   newElement.appendChild(expired ? elementStatusTxt : running ? elementCountdown : elementStartBtn);
