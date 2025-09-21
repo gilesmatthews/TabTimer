@@ -46,8 +46,6 @@ function createAlarmElement(alarmConfig) {
     tabGroup
   } = alarmConfig
 
-  console.log(tabGroup)
-
   let newElement = document.createElement('div');
   newElement.id = `alarm-${id}`;
   newElement.style.display = "flex";
@@ -64,13 +62,14 @@ function createAlarmElement(alarmConfig) {
   colorBar.style.background = tabGroup ? TAB_GROUP_COLORS[tabGroup.color] : "transparent";
   colorBar.style.marginRight = "1px";
 
+  // Tab title
   let elementTxt = document.createElement('p');
   elementTxt.textContent = `${tab.title}`;
-  // elementTxt.style.fontWeight = "bold";
   elementTxt.style.margin = "0";
   elementTxt.style.flex = 3;
   elementTxt.style.wordBreak = "break-all";
 
+  // Timer input
   let elementInput = document.createElement('input');
   elementInput.id = `alarm-${id}-input`;
   elementInput.type = "number";
@@ -78,6 +77,7 @@ function createAlarmElement(alarmConfig) {
   elementInput.style.flex = 1;
   elementInput.style.visibility = running || expired ? "hidden" : "visible";
 
+  // Countdown timer
   let elementCountdown = document.createElement('span');
   elementCountdown.id = `alarm-${id}-countdown`;
   elementCountdown.style.flex = 1;
@@ -103,6 +103,7 @@ function createAlarmElement(alarmConfig) {
     elementCountdown.textContent = "";
   }
 
+  // Countdown status
   let elementStatusTxt = document.createElement('p');
   elementStatusTxt.textContent = expired ? "Finished" : "Error";
   elementStatusTxt.style.margin = "0";
@@ -110,6 +111,7 @@ function createAlarmElement(alarmConfig) {
   elementStatusTxt.style.padding = "0px 0px";
   elementCountdown.style.textAlign = "center";
 
+  // Start button
   let elementStartBtn = document.createElement('button');
   elementStartBtn.id = `alarm-${id}-start`;
   elementStartBtn.textContent = "Start";
@@ -119,15 +121,17 @@ function createAlarmElement(alarmConfig) {
     startAlarm(id);
   });
 
+  // Go-to tab button
   let elementBtn = document.createElement('button');
   elementBtn.id = `alarm-${id}-go`;
   elementBtn.textContent = "Go-to";
   elementBtn.style.flex = 1;
 
   elementBtn.addEventListener('click', () => {
-    switchToTab(tab.id);
+    switchToTab(tab.id, tab.url);
   });
 
+  // Delete alarm button
   let elementDelBtn = document.createElement('button');
   elementDelBtn.id = `alarm-${id}-del`;
   elementDelBtn.textContent = "X";

@@ -6,11 +6,13 @@ document.getElementById('addAlarm').addEventListener('click', async () => {
   await addAlarmInput();
 });
 
+document.getElementById('clearAlarms').addEventListener('click', async () => {
+  await clearAllAlarms();
+});
+
 async function loadAlarms() {
   let { alarmConfigs } = await chrome.storage.session.get('alarmConfigs');
   alarmConfigs = alarmConfigs ? alarmConfigs : {};
-
-  console.log(JSON.stringify(alarmConfigs, null, 2));
 
   let alarmsArray = document.getElementById('alarms-array');
 
@@ -75,8 +77,20 @@ async function startAlarm(alarmId) {
   await chrome.storage.session.set({ alarmConfigs }).then(loadAlarms())
 }
 
-function switchToTab(tabId) {
-  chrome.tabs.update(tabId, { active: true });
+async function switchToTab(tabId, tabURL) {
+
+  const tabs = await chrome.tabs.query({ currentWindow: true })
+
+  if (tabs.map(tab => tab.id).includes(tabId)) {
+    // Go to original tab
+    chrome.tabs.update(tabId, { active: true });
+  } if (tabs.filter(tab => tab.url === tabURL)) {
+    // Go to first tab with same URL if possible
+    chrome.tabs.update((tabs.filter(tab => tab.url === tabURL))[0].id, { active: true });
+  } else {
+    // Open new tab with same URL
+    chrome.tabs.create({ url: tabURL })
+  }
 }
 
 async function deleteAlarm(alarmId) {
@@ -88,4 +102,16 @@ async function deleteAlarm(alarmId) {
 
   await chrome.storage.session.set({ alarmConfigs }).then(loadAlarms())
   await updateBadge();
+}
+
+async function clearAllAlarms() {
+
+  let { alarmConfigs } = await chrome.storage.session.get('alarmConfigs');
+
+  Object.values(alarmConfigs).map(config => {
+      chrome.alarms.clear(`tab-timer-${config.id}`);
+  })
+
+  await chrome.storage.session.clear().then(loadAlarms())
+  await chrome.action.setBadgeText({ text: '' });
 }
