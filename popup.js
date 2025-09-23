@@ -26,6 +26,10 @@ async function loadAlarms() {
 }
 
 async function updateBadge() {
+
+  // Ensure badge color is set
+  chrome.action.setBadgeBackgroundColor({ color: "#D93025" }); 
+
   let { alarmConfigs } = await chrome.storage.session.get('alarmConfigs')
 
   if (alarmConfigs) {

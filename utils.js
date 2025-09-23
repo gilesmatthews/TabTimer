@@ -64,7 +64,11 @@ function createAlarmElement(alarmConfig) {
 
   // Tab title
   let elementTxt = document.createElement('p');
-  elementTxt.textContent = `${tab.title}`;
+  if (tabGroup && tabGroup.title) {
+    elementTxt.innerHTML = `<strong>${tabGroup.title}</strong> - ${tab.title}`;
+  } else {
+    elementTxt.textContent = `${tab.title}`;
+  }
   elementTxt.style.margin = "0";
   elementTxt.style.flex = 3;
   elementTxt.style.wordBreak = "break-all";
