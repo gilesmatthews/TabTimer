@@ -67,10 +67,9 @@ async function addAlarmInput() {
 
 async function startAlarm(alarmId) {
   let { alarmConfigs } = await chrome.storage.session.get('alarmConfigs');
-  const alarmConfig = alarmConfigs[alarmId];
 
   const alarmInput = document.getElementById(`alarm-${alarmId}-input`);
-  const minutes = alarmInput ? parseInt(alarmInput.value, 10) : null;
+  const minutes = alarmInput ? parseFloat(alarmInput.value) : null;
 
   const alarmEnd = Date.now() + minutes * 60 * 1000
 
